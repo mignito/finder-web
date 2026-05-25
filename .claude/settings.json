@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\migni\\\\OneDrive\\\\바탕 화면\\\\파인더\\\\finder-app\" -Force)",
+      "Bash(Select-Object Name, FullName)",
+      "Read(//c/Users/migni/OneDrive/���� ȭ��/���δ�/**)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\migni\\\\OneDrive\\\\바탕 화면\\\\파인더\\\\finder-app\" -Recurse -Force | Select-Object FullName | ConvertTo-Csv -NoTypeInformation | Select-Object -Skip 1 | ForEach-Object { $_ -replace '^\"|\"$', '' } | Sort-Object)",
+      "Read(//c/Users/migni/OneDrive/바탕 화면/파인더/finder-app/**)"
+    ]
+  }
+}

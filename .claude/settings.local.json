@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Start-Sleep -Seconds 3)",
+      "Bash(Get-Content \"C:\\\\Users\\\\migni\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-migni-OneDrive-----------finder-web\\\\e8708d1c-baa6-49fa-866a-355f7b3edd00\\\\tasks\\\\bkaxx9k20.output\" -ErrorAction SilentlyContinue)",
+      "Bash(dir /a \"c:\\\\Users\\\\migni\\\\OneDrive\\\\바탕 화면\\\\파인더\\\\finder-web\")",
+      "Bash(findstr /i \"\\\\.env\\\\|config\")",
+      "PowerShell(Get-ChildItem -Path \"c:\\\\Users\\\\migni\\\\OneDrive\\\\바탕 화면\\\\파인더\\\\finder-web\" -File | Where-Object { $_.Name -match '\\\\.\\(env|config\\)' } | Select-Object Name, FullPath)",
+      "Bash(node seed.mjs)",
+      "Bash(Remove-Item \"c:\\\\Users\\\\migni\\\\OneDrive\\\\바탕 화면\\\\파인더\\\\finder-web\\\\seed.mjs\")",
+      "Bash(git init *)",
+      "Bash(git remote *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
+    ]
+  }
+}
