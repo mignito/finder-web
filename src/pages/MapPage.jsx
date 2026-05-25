@@ -66,8 +66,7 @@ export default function MapPage() {
     reports.forEach((report) => {
       const position = new kakao.maps.LatLng(report.last_seen_lat, report.last_seen_lng);
       const emoji = PET_EMOJI[report.pet_type] || '🐾';
-      const isUrgent = (new Date() - new Date(report.created_at)) / 3600000 < 72;
-      const borderColor = isUrgent ? '#FF3B30' : '#2A9D8F';
+      const borderColor = report.reward >= 500000 ? '#FFB800' : report.reward > 0 ? '#FF9500' : '#2A9D8F';
 
       const inner = report.photo_url
         ? `<img src="${report.photo_url}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';this.nextSibling.style.display='flex'" /><span style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-size:24px;">${emoji}</span>`
@@ -84,11 +83,21 @@ export default function MapPage() {
     return () => { delete window.__goDetail; };
   }, [reports, navigate]);
 
-  const sortedReports = userLocation
-    ? [...reports]
-        .map(r => ({ ...r, distance: getDistance(userLocation.lat, userLocation.lng, r.last_seen_lat, r.last_seen_lng) }))
-        .sort((a, b) => a.distance - b.distance)
-    : reports;
+  const sortedReports = [...reports]
+    .map(r => ({
+      ...r,
+      distance: userLocation
+        ? getDistance(userLocation.lat, userLocation.lng, r.last_seen_lat, r.last_seen_lng)
+        : null,
+    }))
+    .sort((a, b) => {
+      // 보상 높은 순 (유료 노출)
+      const diff = (b.reward || 0) - (a.reward || 0);
+      if (diff !== 0) return diff;
+      // 같으면 거리순
+      if (a.distance != null && b.distance != null) return a.distance - b.distance;
+      return 0;
+    });
 
   return (
     <div style={{ position: 'relative', height: '100dvh' }}>
@@ -127,19 +136,25 @@ export default function MapPage() {
                 : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 34 }}>
                     {PET_EMOJI[report.pet_type] || '🐾'}
                   </div>}
-              {(new Date() - new Date(report.created_at)) / 3600000 < 72 && (
+              {report.reward > 0 && (
                 <span style={{
                   position: 'absolute', top: 5, left: 5,
-                  background: '#FF3B30', color: 'white',
+                  background: report.reward >= 500000 ? '#FFB800' : '#FF9500',
+                  color: 'white',
                   fontSize: 9, fontWeight: 700, padding: '2px 5px', borderRadius: 6,
-                }}>긴급</span>
+                }}>보상</span>
               )}
             </div>
             <div style={{ padding: '7px 8px 8px' }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: '#222', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{report.pet_name}</div>
               <div style={{ fontSize: 10, color: '#888', marginTop: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{report.pet_breed || report.pet_type}</div>
+              {report.reward > 0 && (
+                <div style={{ fontSize: 10, color: '#FF9500', marginTop: 3, fontWeight: 700 }}>
+                  💰 {(report.reward / 10000).toFixed(0)}만원
+                </div>
+              )}
               {report.distance != null && (
-                <div style={{ fontSize: 10, color: 'var(--primary)', marginTop: 4, fontWeight: 600 }}>
+                <div style={{ fontSize: 10, color: 'var(--primary)', marginTop: 2, fontWeight: 600 }}>
                   📍 {report.distance < 1 ? `${Math.round(report.distance * 1000)}m` : `${report.distance.toFixed(1)}km`}
                 </div>
               )}
