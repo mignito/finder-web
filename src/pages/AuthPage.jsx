@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { supabase } from '../lib/supabase';
+import Logo from '../components/Logo';
 
 export default function AuthPage() {
   const [mode, setMode] = useState('login');
@@ -36,9 +37,11 @@ export default function AuthPage() {
     <div style={{ minHeight: '100dvh', background: 'var(--primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
       <div style={{ width: '100%', maxWidth: 400 }}>
         <div style={{ textAlign: 'center', marginBottom: 40 }}>
-          <div style={{ fontSize: 64 }}>🐾</div>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 4 }}>
+            <Logo size={64} />
+          </div>
           <h1 style={{ fontSize: 32, fontWeight: 800, color: 'var(--primary)', letterSpacing: 4, margin: '8px 0 4px' }}>FINDER</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: 14 }}>반려동물 실종 탐색 커뮤니티</p>
+          <p style={{ color: 'var(--text-muted)', fontSize: 14 }}>마음을 모아 함께 찾는 실종자 플랫폼</p>
         </div>
 
         <form onSubmit={handleSubmit} style={{ background: 'white', borderRadius: 16, padding: 24, boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
@@ -71,15 +74,7 @@ export default function AuthPage() {
           )}
 
           <button className="btn-primary" type="submit" disabled={loading}>
-            {loading ? '처리 중...' : (mode === 'login' ? '로그인' : '회원가입')}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => { setMode(mode === 'login' ? 'signup' : 'login'); setError(''); }}
-            style={{ width: '100%', marginTop: 14, background: 'none', color: 'var(--primary)', fontSize: 14, padding: 8 }}
-          >
-            {mode === 'login' ? '계정이 없으신가요? 회원가입' : '이미 계정이 있으신가요? 로그인'}
+            {loading ? '처리 중...' : '로그인'}
           </button>
         </form>
       </div>
