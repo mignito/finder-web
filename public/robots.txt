@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://finder-web-red.vercel.app/sitemap.xml

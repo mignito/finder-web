@@ -10,7 +10,7 @@ async function uploadImage(file, folder) {
   return supabase.storage.from('photos').getPublicUrl(filename).data.publicUrl;
 }
 
-export default function ReportPage() {
+export default function ReportPage({ session }) {
   const navigate = useNavigate();
   const fileRef = useRef();
   const mapRef = useRef();
@@ -100,6 +100,7 @@ export default function ReportPage() {
         description: form.description, reward: form.reward ? parseInt(form.reward) : 0,
         last_seen_address: address, last_seen_lat: coords.lat, last_seen_lng: coords.lng,
         photo_url: photoUrl,
+        user_id: session?.user?.id,
       });
       if (error) throw error;
       alert('실종 신고가 등록됐어요!');

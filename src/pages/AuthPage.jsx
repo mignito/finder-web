@@ -74,8 +74,32 @@ export default function AuthPage() {
           )}
 
           <button className="btn-primary" type="submit" disabled={loading}>
-            {loading ? '처리 중...' : '로그인'}
+            {loading ? '처리 중...' : (mode === 'login' ? '로그인' : '회원가입')}
           </button>
+
+          <div style={{ marginTop: 20, textAlign: 'center' }}>
+            <span style={{ fontSize: 13, color: 'var(--text-sub)' }}>
+              {mode === 'login' ? '처음이신가요?' : '이미 계정이 있으신가요?'}
+            </span>
+            <button
+              type="button"
+              onClick={() => {
+                setMode(mode === 'login' ? 'signup' : 'login');
+                setError('');
+              }}
+              style={{
+                background: 'none',
+                color: 'var(--primary)',
+                fontSize: 13,
+                fontWeight: 700,
+                marginLeft: 6,
+                cursor: 'pointer',
+                textDecoration: 'underline'
+              }}
+            >
+              {mode === 'login' ? '회원가입하기' : '로그인하기'}
+            </button>
+          </div>
         </form>
       </div>
     </div>

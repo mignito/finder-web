@@ -170,14 +170,31 @@ export default function DetailPage() {
         )}
       </div>
 
-      <div style={{ padding: 16, background: 'var(--primary-light)', borderBottom: '1px solid var(--primary-border)' }}>
+      <div style={{ padding: 16, background: report.status === 'found' ? '#f0f0f0' : 'var(--primary-light)', borderBottom: `1px solid ${report.status === 'found' ? '#ddd' : 'var(--primary-border)'}` }}>
         {report.photo_url && (
-          <img src={report.photo_url} alt="" style={{ width: '100%', height: 240, objectFit: 'cover', borderRadius: 10, marginBottom: 12 }} />
+          <div style={{ position: 'relative', overflow: 'hidden', borderRadius: 10, marginBottom: 12, height: 240 }}>
+            <img src={report.photo_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: report.status === 'found' ? 'grayscale(70%) blur(1px)' : 'none' }} />
+            {report.status === 'found' && (
+              <div style={{
+                position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.3)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: 'white', fontSize: 22, fontWeight: 900, letterSpacing: 2
+              }}>
+                🎉 가족의 품으로 돌아갔습니다!
+              </div>
+            )}
+          </div>
         )}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div style={{ flex: 1 }}>
-            {missingDate && <span className="badge-urgent">🔴 실종 {missingDate}</span>}
-            <h2 style={{ fontSize: 18, fontWeight: 700, marginTop: 4 }}>
+            {report.status === 'found' ? (
+              <span style={{ display: 'inline-block', background: '#2A9D8F', color: 'white', fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 10, marginBottom: 4 }}>
+                🎉 발견 완료
+              </span>
+            ) : (
+              missingDate && <span className="badge-urgent">🔴 실종 {missingDate}</span>
+            )}
+            <h2 style={{ fontSize: 18, fontWeight: 700, marginTop: 4, color: report.status === 'found' ? '#555' : 'inherit' }}>
               {isOfficial ? `${report.name}님을 찾습니다` : `${report.pet_name}를 찾아주세요`}
             </h2>
             {isOfficial ? (
@@ -191,7 +208,7 @@ export default function DetailPage() {
           {!isOfficial && (
             <div style={{ textAlign: 'right', flexShrink: 0 }}>
               <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>현상금</p>
-              <p style={{ fontSize: 18, fontWeight: 700, color: 'var(--primary)' }}>{(report.reward || 0).toLocaleString()}원</p>
+              <p style={{ fontSize: 18, fontWeight: 700, color: report.status === 'found' ? '#888' : 'var(--primary)', textDecoration: report.status === 'found' ? 'line-through' : 'none' }}>{(report.reward || 0).toLocaleString()}원</p>
             </div>
           )}
         </div>
@@ -243,36 +260,47 @@ export default function DetailPage() {
       ))}
 
       {/* 기록 입력창 */}
-      <form onSubmit={handleSubmit} style={{
-        position: 'fixed', bottom: 64, left: '50%', transform: 'translateX(-50%)',
-        width: '100%', maxWidth: 'var(--max-width)',
-        background: 'white', borderTop: '1px solid var(--border)', padding: 12, zIndex: 50,
-      }}>
-        {imagePreview && (
-          <div style={{ position: 'relative', marginBottom: 8, display: 'inline-block' }}>
-            <img src={imagePreview} alt="" style={{ height: 60, borderRadius: 6, objectFit: 'cover' }} />
-            <button type="button" onClick={() => { setImageFile(null); setImagePreview(null); }}
-              style={{ position: 'absolute', top: -6, right: -6, background: '#333', color: 'white', borderRadius: '50%', width: 20, height: 20, fontSize: 11 }}>✕</button>
-          </div>
-        )}
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          <button type="button" onClick={() => fileRef.current.click()}
-            style={{ padding: 8, borderRadius: 20, border: '1px solid #ddd', background: imageFile ? 'var(--primary-light)' : 'white', fontSize: 18, flexShrink: 0 }}>
-            {imageFile ? '📷✅' : '📷'}
-          </button>
-          <button type="button" onClick={() => { setPendingCoords(selectedCoords); setMapOpen(true); }}
-            style={{ padding: 8, borderRadius: 20, border: `1px solid ${selectedCoords ? 'var(--primary)' : '#ddd'}`, background: selectedCoords ? 'var(--primary-light)' : 'white', fontSize: 18, flexShrink: 0 }}>
-            {selectedCoords ? '📍✅' : '📍'}
-          </button>
-          <input ref={fileRef} type="file" accept="image/*" hidden onChange={handleImageChange} />
-          <input className="input" style={{ flex: 1, borderRadius: 20, padding: '8px 14px' }}
-            placeholder="기억하거나 목격한 내용..." value={text} onChange={e => setText(e.target.value)} />
-          <button type="submit" disabled={loading}
-            style={{ background: 'var(--primary)', color: 'white', padding: '8px 16px', borderRadius: 20, fontWeight: 700, fontSize: 14, flexShrink: 0 }}>
-            {loading ? '...' : '기록'}
-          </button>
+      {report.status === 'found' ? (
+        <div style={{
+          position: 'fixed', bottom: 64, left: '50%', transform: 'translateX(-50%)',
+          width: '100%', maxWidth: 'var(--max-width)',
+          background: '#f9f9f9', borderTop: '1px solid var(--border)', padding: '16px 12px', zIndex: 50,
+          textAlign: 'center', color: '#777', fontSize: 13, fontWeight: 600
+        }}>
+          🐾 발견이 완료되어 제보 작성이 완료(비활성화)되었습니다.
         </div>
-      </form>
+      ) : (
+        <form onSubmit={handleSubmit} style={{
+          position: 'fixed', bottom: 64, left: '50%', transform: 'translateX(-50%)',
+          width: '100%', maxWidth: 'var(--max-width)',
+          background: 'white', borderTop: '1px solid var(--border)', padding: 12, zIndex: 50,
+        }}>
+          {imagePreview && (
+            <div style={{ position: 'relative', marginBottom: 8, display: 'inline-block' }}>
+              <img src={imagePreview} alt="" style={{ height: 60, borderRadius: 6, objectFit: 'cover' }} />
+              <button type="button" onClick={() => { setImageFile(null); setImagePreview(null); }}
+                style={{ position: 'absolute', top: -6, right: -6, background: '#333', color: 'white', borderRadius: '50%', width: 20, height: 20, fontSize: 11 }}>✕</button>
+            </div>
+          )}
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <button type="button" onClick={() => fileRef.current.click()}
+              style={{ padding: 8, borderRadius: 20, border: '1px solid #ddd', background: imageFile ? 'var(--primary-light)' : 'white', fontSize: 18, flexShrink: 0 }}>
+              {imageFile ? '📷✅' : '📷'}
+            </button>
+            <button type="button" onClick={() => { setPendingCoords(selectedCoords); setMapOpen(true); }}
+              style={{ padding: 8, borderRadius: 20, border: `1px solid ${selectedCoords ? 'var(--primary)' : '#ddd'}`, background: selectedCoords ? 'var(--primary-light)' : 'white', fontSize: 18, flexShrink: 0 }}>
+              {selectedCoords ? '📍✅' : '📍'}
+            </button>
+            <input ref={fileRef} type="file" accept="image/*" hidden onChange={handleImageChange} />
+            <input className="input" style={{ flex: 1, borderRadius: 20, padding: '8px 14px' }}
+              placeholder="기억하거나 목격한 내용..." value={text} onChange={e => setText(e.target.value)} />
+            <button type="submit" disabled={loading}
+              style={{ background: 'var(--primary)', color: 'white', padding: '8px 16px', borderRadius: 20, fontWeight: 700, fontSize: 14, flexShrink: 0 }}>
+              {loading ? '...' : '기록'}
+            </button>
+          </div>
+        </form>
+      )}
 
       {mapOpen && (
         <div className="modal-overlay" onClick={e => e.target === e.currentTarget && setMapOpen(false)}>
