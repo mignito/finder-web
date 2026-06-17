@@ -5,7 +5,7 @@ import { maskName, formatMissingDate } from '../lib/format';
 import Logo from '../components/Logo';
 import NoticeBanner from '../components/NoticeBanner';
 
-const PET_EMOJI = { '강아지': '🐶', '고양이': '🐱' };
+const PET_EMOJI = { '강아지': '🐶', '고양이': '🐱', '사람': '👤' };
 
 const FILTER_OPTIONS = [
   { label: '6개월', months: 6 },
@@ -201,7 +201,11 @@ export default function MapPage() {
       if (isAmber) {
         borderColor = '#C53030';
       } else if (report.source !== 'official') {
-        borderColor = report.reward >= 500000 ? '#FFB800' : report.reward > 0 ? '#FF9500' : '#2A9D8F';
+        if (report.pet_type === '사람') {
+          borderColor = '#4A90E2'; // 사람이면 파란색 테두리
+        } else {
+          borderColor = report.reward >= 500000 ? '#FFB800' : report.reward > 0 ? '#FF9500' : '#2A9D8F';
+        }
       }
 
       const inner = report.photo_url

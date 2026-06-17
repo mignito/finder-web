@@ -54,6 +54,11 @@ function BottomNav() {
   );
 }
 
+function ProtectedRoute({ session, children }) {
+  if (!session) return <AuthPage />;
+  return children;
+}
+
 export default function App() {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -75,15 +80,22 @@ export default function App() {
   }, []);
 
   if (loading) return <div className="spinner" />;
-  if (!session) return <AuthPage />;
 
   return (
     <>
       <Routes>
         <Route path="/" element={<MapPage session={session} />} />
-        <Route path="/report" element={<ReportPage session={session} />} />
         <Route path="/detail/:id" element={<DetailPage session={session} />} />
-        <Route path="/profile" element={<ProfilePage session={session} />} />
+        <Route path="/report" element={
+          <ProtectedRoute session={session}>
+            <ReportPage session={session} />
+          </ProtectedRoute>
+        } />
+        <Route path="/profile" element={
+          <ProtectedRoute session={session}>
+            <ProfilePage session={session} />
+          </ProtectedRoute>
+        } />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
       <BottomNav />

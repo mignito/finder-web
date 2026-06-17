@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FINDER - 실종 신고 등록 시안</title>
+  <style>
+    :root {
+      --primary: #2A9D8F;
+      --primary-light: #E8F8F6;
+      --primary-border: #B2E0DC;
+      --primary-dark: #1F7A6E;
+      --text: #333;
+      --text-sub: #666;
+      --text-muted: #999;
+      --border: #eee;
+      --white: #fff;
+      --radius: 12px;
+      --max-width: 430px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f0f2f5;
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: var(--max-width);
+      background: var(--white);
+      min-height: 100vh;
+      box-shadow: 0 0 20px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back-btn {
+      font-size: 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-sub);
+    }
+
+    h1 {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    /* 탭 메뉴 */
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      background: #fafafa;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 14px 0;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      background: var(--white);
+      font-weight: 700;
+    }
+
+    /* 폼 영역 */
+    .form-container {
+      padding: 20px 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    /* 입력 요소 */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-sub);
+    }
+
+    .input-text, select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .input-text:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
+    }
+
+    /* 토글/버튼 선택기 */
+    .toggle-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .toggle-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      background: var(--white);
+      color: var(--text-sub);
+      border: 1px solid #ddd;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .toggle-btn.active {
+      background: var(--primary);
+      color: var(--white);
+      border-color: var(--primary);
+    }
+
+    /* 사진 업로드 */
+    .photo-upload {
+      height: 160px;
+      background: #f7f9fa;
+      border: 2px dashed #ccd3d9;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+
+    .photo-upload:hover {
+      background: var(--primary-light);
+      border-color: var(--primary-border);
+      color: var(--primary);
+    }
+
+    .photo-icon {
+      font-size: 28px;
+    }
+
+    /* 경고 배너 */
+    .warning-banner {
+      background: #FFF5F5;
+      border: 1px solid #FED7D7;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 12px;
+      color: #C53030;
+      line-height: 1.6;
+    }
+
+    .warning-title {
+      font-weight: 700;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* 지도 선택기 */
+    .map-trigger {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary-light);
+      color: var(--primary);
+      border: 1px solid var(--primary-border);
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .map-trigger:hover {
+      background: var(--primary-border);
+      color: var(--primary-dark);
+    }
+
+    /* 제출 버튼 */
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      background: var(--primary);
+      color: var(--white);
+      border: none;
+      border-radius: var(--radius);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(42, 157, 143, 0.2);
+      transition: all 0.2s;
+      margin-top: 10px;
+    }
+
+    .submit-btn:hover {
+      background: var(--primary-dark);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <button class="back-btn">←</button>
+      <h1>실종 신고 등록 시안</h1>
+    </header>
+
+    <!-- 탭 선택기 -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(event, 'pet-tab')">🐶 동물 실종 신고</button>
+      <button class="tab-btn" onclick="switchTab(event, 'person-tab')">👤 사람 실종 신고</button>
+    </div>
+
+    <!-- 폼 입력 영역 -->
+    <form class="form-container" onsubmit="event.preventDefault(); alert('시안 제출이 완료되었습니다!');">
+      
+      <!-- 1) 동물 실종 신고 탭 -->
+      <div id="pet-tab" class="tab-content active">
+        <div class="form-group">
+          <label>동물 종류 *</label>
+          <div class="toggle-buttons">
+            <span class="toggle-btn active" onclick="toggleSelection(this)">강아지</span>
+            <span class="toggle-btn" onclick="toggleSelection(this)">고양이</span>
+            <span class="toggle-btn" onclick="toggleSelection(this)">기타</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>반려동물 이름 *</label>
+          <input type="text" class="input-text" placeholder="예: 초코, 나비">
+        </div>
+
+        <div class="form-group">
+          <label>품종</label>
+          <input type="text" class="input-text" placeholder="예: 말티즈, 코리안숏헤어">
+        </div>
+
+        <div class="form-group">
+          <label>나이 (세)</label>
+          <input type="number" class="input-text" placeholder="예: 3">
+        </div>
+
+        <div class="form-group">
+          <label>현상금 (원)</label>
+          <input type="number" class="input-text" placeholder="예: 500000">
+        </div>
+
+        <div class="form-group">
+          <label>마지막 목격 위치 *</label>
+          <button type="button" class="map-trigger">📍 지도에서 위치 선택</button>
+        </div>
+
+        <div class="form-group">
+          <label>특징 설명</label>
+          <textarea rows="3" placeholder="예: 빨간색 목줄 착용, 사람을 잘 따름, 오른쪽 귀끝이 살짝 쳐짐"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>반려동물 사진</label>
+          <div class="photo-upload">
+            <span class="photo-icon">📷</span>
+            <span>클릭하여 사진 추가 (선택사항)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2) 사람 실종 신고 탭 -->
+      <div id="person-tab" class="tab-content">
+        <!-- 사람 실종 시 경찰청 신고 권장 경고문 -->
+        <div class="warning-banner">
+          <div class="warning-title">⚠️ 중요 안내</div>
+          실종 아동 및 실종자 발생 시 **즉시 경찰청(☎182)**에 먼저 신고하셔야 합니다. 본 플랫폼의 신고 등록은 실종 소식을 지역 커뮤니티에 전파하고 실시간 목격을 제보받기 위한 보조 수단입니다.
+        </div>
+
+        <div class="form-group">
+          <label>실종 대상 구분 *</label>
+          <select>
+            <option value="010">아동 (만 18세 미만)</option>
+            <option value="020">지적/자폐성/정신장애인</option>
+            <option value="060">치매환자</option>
+            <option value="080">일반 실종자 (기타)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>실종자 이름 *</label>
+          <input type="text" class="input-text" placeholder="실종자 성명">
+        </div>
+
+        <div class="form-group">
+          <label>성별 *</label>
+          <div class="toggle-buttons">
+            <span class="toggle-btn active" onclick="toggleSelection(this)">남성</span>
+            <span class="toggle-btn" onclick="toggleSelection(this)">여성</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>현재 나이 (세) *</label>
+          <input type="number" class="input-text" placeholder="예: 74">
+        </div>
+
+        <div class="form-group">
+          <label>마지막 목격 위치 *</label>
+          <button type="button" class="map-trigger">📍 지도에서 위치 선택</button>
+        </div>
+
+        <div class="form-group">
+          <label>당시 착의 사항 *</label>
+          <input type="text" class="input-text" placeholder="예: 검은색 모자, 흰색 패딩, 남색 바지">
+        </div>
+
+        <div class="form-group">
+          <label>신체 특징 및 인적 사항</label>
+          <textarea rows="3" placeholder="예: 거동이 불편하심, 머리가 희끗함, 말씨가 경상도 어조임"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>실종자 사진 *</label>
+          <div class="photo-upload">
+            <span class="photo-icon">👤📷</span>
+            <span>실종자의 최근 사진을 업로드해 주세요</span>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn">신고 등록 완료하기 ✓</button>
+    </form>
+  </div>
+
+  <script>
+    function switchTab(event, tabId) {
+      // 모든 탭 버튼 비활성화
+      const buttons = document.querySelectorAll('.tab-btn');
+      buttons.forEach(btn => btn.classList.remove('active'));
+
+      // 클릭한 탭 활성화
+      event.currentTarget.classList.add('active');
+
+      // 모든 탭 컨텐츠 숨김
+      const contents = document.querySelectorAll('.tab-content');
+      contents.forEach(content => content.classList.remove('active'));
+
+      // 선택한 탭 컨텐츠 표시
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    function toggleSelection(element) {
+      // 부모 요소 찾기
+      const container = element.parentElement;
+      // 부모의 모든 자식에서 active 클래스 제거
+      const buttons = container.querySelectorAll('.toggle-btn');
+      buttons.forEach(btn => btn.classList.remove('active'));
+      // 클릭한 버튼에 active 클래스 추가
+      element.classList.add('active');
+    }
+  </script>
+</body>
+</html>
